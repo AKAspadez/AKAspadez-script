@@ -15,7 +15,7 @@ ScreenGui.Parent = game.CoreGui
 
 local Bar = Instance.new("Frame")
 Bar.Size = UDim2.new(0.6, 0, 0, 40)
-Bar.Position = UDim2.new(0.2, 0, 1, 40) -- start off-screen
+Bar.Position = UDim2.new(0.2, 0, 1, 40)
 Bar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 Bar.BorderSizePixel = 0
 Bar.Parent = ScreenGui
@@ -35,7 +35,6 @@ TextBox.TextSize = 20
 TextBox.ClearTextOnFocus = false
 TextBox.Parent = Bar
 
--- Watermark
 local Watermark = Instance.new("TextLabel")
 Watermark.Size = UDim2.new(0, 120, 0, 20)
 Watermark.Position = UDim2.new(1, -125, 1, -25)
@@ -46,23 +45,24 @@ Watermark.Font = Enum.Font.Code
 Watermark.TextSize = 16
 Watermark.Parent = Bar
 
--- Slide-up animation (smooth)
 TweenService:Create(
 	Bar,
 	TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
 	{Position = UDim2.new(0.2, 0, 1, -50)}
 ):Play()
 
--- LoopWalkSpeed logic
+-- REAL Infinite Yield LoopWalkSpeed
 local function StartLoopWS()
-	if LoopWSConnection then LoopWSConnection:Disconnect() end
+	if LoopWSConnection then
+		LoopWSConnection:Disconnect()
+	end
 
 	LoopWSConnection = RunService.Stepped:Connect(function()
 		local char = LocalPlayer.Character
 		if not char then return end
 
 		local hum = char:FindFirstChildOfClass("Humanoid")
-		if hum and hum.WalkSpeed ~= LoopWSValue then
+		if hum then
 			hum.WalkSpeed = LoopWSValue
 		end
 	end)
@@ -74,11 +74,15 @@ local function StopLoopWS()
 		LoopWSConnection = nil
 	end
 
-	local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-	if hum then hum.WalkSpeed = 16 end
+	local char = LocalPlayer.Character
+	if char then
+		local hum = char:FindFirstChildOfClass("Humanoid")
+		if hum then
+			hum.WalkSpeed = 16
+		end
+	end
 end
 
--- Command handler
 TextBox.FocusLost:Connect(function(enterPressed)
 	if not enterPressed then return end
 
